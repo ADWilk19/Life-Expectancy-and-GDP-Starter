@@ -2,6 +2,8 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import functions
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 st.title("Exploring Life Expectancy at Birth and GDP")
@@ -17,7 +19,7 @@ if page == "Introduction 👋":
     st.subheader("What are the goals of the project? 🎯")
     st.markdown('''This is a project that investigates Life\
                 Expectancy at Birth and GDP for six nations between 2000 and 2015.\nThe goals are to\
-                prepare the data, explore  and analyse it to create plots and
+                prepare the data, explore  and analyse it to create plots, and
                 seek to answer the questions, below.''')
     st.subheader("What questions will I attempt to answer? 🙋")
     st.markdown('''
@@ -38,14 +40,23 @@ elif page == "Exploring the Data  🔍":
         national accounts data, and OECD National Accounts data files.\n- Life expectancy Data Source: \
         [World Health Organization](http://apps.who.int/gho/data/node.main.688)')
     st.subheader('Initial Exploration 🔍')
-    st.markdown('To begin, I loaded the data using Pandas.  The head of the DataFrame can be seen below:')
+    st.markdown('To begin, I loaded the data using Pandas.  The head of the table can be seen below:')
     st.code('df = pd.read_csv("all_data.csv")\ndf.head()')
-    st.write(functions.load_data())
-    st.markdown(''' Looking at the column headers, it looks as if they could be renamed to make\
-        it easier to read. 🤔
-        ''')
+    df = functions.load_data()
+    df.columns = ['country', 'year', 'life_expectancy', 'GDP']
+    df = df.assign(hack='').set_index('hack')
+    st.table(df.head())
+    st.markdown('The table has four columns.  The life_expectancy has been renamed to make it easier to read.')
+
 
 
 # Visualisations
-# else:
-#     st.header("Visualisations 📊")
+else:
+    st.header("Visualisations 📊")
+    st.markdown('Let looks at the distribution of GDP for the six countries')
+    df = pd.read_csv('all_data.csv')
+    plt.figure(figsize=(8,6))
+    ax = sns.displot(df.GDP, rug = True, kde=False)
+    plt.xlabel("GDP in Trillions of U.S. Dollars")
+    plt.show()
+    st.pyplot(ax)
