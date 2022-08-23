@@ -1,14 +1,22 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Intro",
+    page_title="Welcome",
     page_icon="👋",
 )
 
 
-st.sidebar.success("Select a demo above.")
+# st.sidebar.success("Select a demo above.")
 st.sidebar.header("Introduction to the project")
+st.sidebar.markdown("This project will investigate if there is a strong correlation between the economic output of a country and the life expectancy of its citizens.")
 st.header("Introduction to the project 👋")
+st.subheader("Objective 📍")
+st.markdown("To explore the relationship between GDP and Life Expectancy at Birth in the data sourced, below: ")
+st.subheader("Data Sources 💽")
+st.markdown('The data was retrieved from the following sources:\n- GDP Source:\
+    [World Bank](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD)\
+    national accounts data, and OECD National Accounts data files.\n- Life expectancy Data Source: \
+    [World Health Organization](http://apps.who.int/gho/data/node.main.688)')
 st.subheader("What are the goals of the project? 🎯")
 st.markdown('''This project will investigate if there is a strong correlation between the economic output of a country and the life expectancy of its citizens.
             The goals are to prepare data, followed by analysis with plots, and seek to explain the findings from the study.''')
