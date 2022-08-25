@@ -14,19 +14,20 @@ st.set_page_config(
 st.header("Visualisations 📊")
 st.sidebar.header("Visualisations")
 st.sidebar.markdown("""These visualisations are split over the following tabs:\n
-- Displots;
-- Barplots;
-- Violin plots; and
-- Lineplots.
+- Distplots;
+- Bar Plots;
+- Violin Plots; and
+- Line Charts;
+- Scatter Plots.
 """)
 
 
 # Tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Displots", "Barplots", "Violin plots","Lineplots"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Distplots", "Bar Plots", "Violin Plots","Line Charts","Scatter Plots"])
 
 # Displots
 with tab1:
-    st.subheader('Displots')
+    st.subheader('Distplots')
     # Load data
     df = pd.read_csv('all_data.csv')
     df.columns = ['country', 'year', 'life_expectancy', 'GDP']
@@ -133,8 +134,6 @@ with tab3:
     ax2.set_ylabel('Country',size=13)
     ax2.set_xlabel("Life expectancy at birth (years)",size=13)
     ax2.xaxis.set_label_coords(.5, -.1)
-    # spacing = 0.100
-    # fig.subplots_adjust(bottom=spacing)
     st.pyplot(fig)
 
     # Swarm plot
@@ -220,4 +219,35 @@ with tab4:
                 same time which could be looked into further. This type of plotting proves useful since much \
                 of these nuances were lost when the y axis was shared among the countries. \
                 Also, the seemingly linear changes were not as smooth for some of the countries.
+                ''')
+
+# Scatter Plots
+with tab5:
+    st.subheader('Scatter Plots')
+    fig = plt.figure(figsize=(9,6))
+    ax = sns.scatterplot(x=df.life_expectancy,y=df.GDP,hue=df.country)
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.title('Life Expectancy at Birth vs GDP',size=15)
+    plt.xlabel('Life Expectancy at Birth',size=13)
+    plt.ylabel('GDP in Trillions of Dollars',size=13)
+    st.pyplot(fig)
+    st.markdown('''
+                The next two charts will explore the relationship between `GDP` and `Life Expectancy at Birth`. In the chart, above, \
+                it looks like the previous charts where GDP for Zimbabwe is staying flat, while their life expectancy \
+                is going up. For the other countries they seem to exhibit a rise in life expectancy as GDP goes up. \
+                The US and China seem to have very similar slopes in their relationship between GDP and life expectancy.
+                ''')
+    scatter = sns.FacetGrid(df,col="country",col_wrap=3,
+                      hue = "country", sharey = False, sharex = False)
+    scatter = (scatter.map(sns.scatterplot,"life_expectancy", "GDP")
+         .add_legend()
+         .set_axis_labels("Life expectancy at birth (years)", "GDP in Trillions of U.S. Dollars"))
+    st.pyplot(scatter)
+    st.markdown('''
+                Like the previous plots, countries are broken out into each scatter plot by facets. Looking at the \
+                individual countries, most have linear relationships between GDP and life expectancy. China, on the \
+                other hand has a slightly exponential curve, and Chile's looks a bit logarithmic. In general though one \
+                can see an increase in GDP and life expectancy, exhibiting a positive correlation.
                 ''')
