@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import functions
 
 # Page Config
 st.set_page_config(
@@ -14,44 +15,32 @@ st.set_page_config(
 st.header("Visualisations 📊")
 st.sidebar.header("Visualisations")
 st.sidebar.markdown("""These visualisations are split over the following tabs:\n
-- Distplots;
+- Dist Plots;
 - Bar Plots;
 - Violin Plots; and
 - Line Charts;
 - Scatter Plots.
 """)
 
-
 # Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Distplots", "Bar Plots", "Violin Plots","Line Charts","Scatter Plots"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Dist Plots", "Bar Plots", "Violin Plots","Line Charts","Scatter Plots"])
 
-# Displots
+# Dist Plots
 with tab1:
-    st.subheader('Distplots')
+    st.subheader('Dist Plots')
     # Load data
     df = pd.read_csv('all_data.csv')
     df.columns = ['country', 'year', 'life_expectancy', 'GDP']
 
-    # GDP displot
-    st.markdown('#### The distribution of GDP for the six countries:')
-    plt.figure(figsize=(3,3))
-    ax1 = sns.displot(df.GDP, rug = True, kde=False)
-    plt.xlabel("GDP in Trillions of U.S. Dollars")
-    plt.title("GDP is right skewed between 2000 and 2015",loc='left')
-    plt.show()
-    st.pyplot(ax1)
+    # GDP dist plot
+    functions.GDP_dist_plot()
     st.markdown('It would appear that `GDP` is right skewed for these countries.\
         This type of distribution could be described as a power law distribution.\
         More about the power law can be read [here](https://en.wikipedia.org/wiki/Power_law).')
 
-    # Life Expectancy at Birth displot
+    # Life Expectancy at Birth dist plot
     st.markdown('#### The distribution of Life Expectancy at Birth for the six countries:')
-    plt.figure(figsize=(8,6))
-    ax2 = sns.displot(df.life_expectancy, rug = True, kde=False)
-    plt.xlabel("Life Expectacny at Birth (Years)")
-    plt.title("Life Expectancy at Birth is left skewed between 2000 and 2015")
-    plt.show()
-    st.pyplot(ax2)
+    functions.life_expectancy_distplot()
     st.markdown('`Life Expectancy at Birth` is very left skewed where most of the values are on the right-hand side.\
         This is almost the opposite of what was observed in the `GDP` column. A further\
         look might also identify different modes or smaller groupings of distributions within the range.')
@@ -71,20 +60,7 @@ with tab2:
 
     # GDP
     st.markdown('### Average GDP by Country')
-    fig, ax = plt.subplots()
-    plt.figure(figsize=(8,6))
-    ax = sns.barplot(x ='GDP',y = 'country',data=dfMeans,order=dfMeans.sort_values('GDP').country,ax=ax)
-    for i in ax.containers:
-        ax.bar_label(i,)
-    ax.set_xlabel('GDP in trillions of dollars')
-    ax.set_ylabel('Country')
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    ax.set_xticks([])
-    ax.set_xticklabels([])
-    st.pyplot(fig)
+    functions.GDP_bar()
     st.markdown('For the average `GDP` by `Country` it seems that the US has a much higher value compared\
         to the rest of the countries. In this bar plot, Zimbabwe is not even visible where Chile is just barely seen.\
         In comparison, the USA has a huge GDP compared to the rest. China, Germany and Mexico seem to be relatively\
@@ -93,20 +69,7 @@ with tab2:
 
     # Life Expectancy at Birth
     st.markdown('### Average Life Expectancy at Birth by Country')
-    fig2, ax2 = plt.subplots()
-    plt.figure(figsize=(8,6))
-    ax2 = sns.barplot(x ='life_expectancy',y = 'country',data=dfMeans,order=dfMeans.sort_values('life_expectancy').country,ax=ax2)
-    for i in ax.containers:
-        ax2.bar_label(i,)
-    ax2.set_xlabel('Life Expectancy at Birth (Years)')
-    ax2.set_ylabel('Country')
-    ax2.spines['top'].set_visible(False)
-    ax2.spines['right'].set_visible(False)
-    ax2.spines['bottom'].set_visible(False)
-    ax2.spines['left'].set_visible(False)
-    ax2.set_xticks([])
-    ax2.set_xticklabels([])
-    st.pyplot(fig2)
+    functions.life_expectancy_bar()
     st.markdown('As can be seen, the average `Life Expectancy at Birth` for most countries is\
         somewhere between 74 and 80 years.  The exception is Zimbabwe which, at just over 50 years,\
         might explain the left skew of the displot.')
@@ -123,34 +86,15 @@ with tab3:
                 ''')
     st.markdown('#### Violin plots for GDP and Life Expectancy at Birth')
 
-
     # Violin plots for average GDP and Life Expectancy at Birth
-    fig, (ax1,ax2) = plt.subplots(1, 2, sharey=True, figsize=(9, 6))
-    ax1 = sns.violinplot(ax=ax1, x=df.GDP, y=df.country)
-    ax1.set_xlabel("GDP in Trillions of U.S. Dollars",size=13)
-    ax1.set_ylabel('Country',size=13)
-    ax1.xaxis.set_label_coords(.5, -.1)
-    ax2 = sns.violinplot(ax=ax2, x=df.life_expectancy, y=df.country)
-    ax2.set_ylabel('Country',size=13)
-    ax2.set_xlabel("Life expectancy at birth (years)",size=13)
-    ax2.xaxis.set_label_coords(.5, -.1)
-    st.pyplot(fig)
+    functions.violin_plot()
 
     # Swarm plot
     st.subheader('Overlaid Swarm Plot')
     st.markdown ('''Swarm plots are useful because they show dot density around the values as well as distribution\
         through area/shape.  The charts below show swarm plots over violin plots for `GDP` and `Life Expectancy`.\n
 In the case of of the `GDP` plot on the left, Chile and Zimbabwe have a vertical line of dots that illustrate the number of data points that fall around their values. This detail would have been lost in the box plot, unless the reader is very adept at data visualizations.''')
-    fig2, (ax3,ax4) = plt.subplots(1, 2, sharey=True, figsize=(9, 6))
-    ax3 = sns.swarmplot(ax=ax3, x=df.GDP, y=df.country)
-    ax3 = sns.violinplot(ax=ax3, x=df.GDP, y=df.country,color='black')
-    ax3.set_xlabel("GDP in Trillions of U.S. Dollars",size=13)
-    ax3.xaxis.set_label_coords(.5, -.1)
-    ax4 = sns.swarmplot(ax=ax4, x=df.life_expectancy, y=df.country)
-    ax4 = sns.violinplot(ax=ax4, x=df.life_expectancy, y=df.country,color='black')
-    ax4.set_xlabel("Life expectancy at birth (years)",size=13)
-    ax4.xaxis.set_label_coords(.5, -.1)
-    st.pyplot(fig2)
+    functions.swarm_violin_plot()
 
 # Line Plots
 with tab4:
@@ -163,29 +107,12 @@ with tab4:
                 Of the six countries, the USA and China have seen the most siginificant increases. \
                 China went from less than a quarter trillion dollars to one trillion dollars over the time span.
                 ''')
-    fig = plt.figure(figsize=(8,6))
-    ax = sns.lineplot(x=df.year, y=df.GDP, hue=df.country,marker="o")
-    ax.set_xlabel("Year",size=12)
-    ax.set_xbound(lower=None, upper=2016)
-    ax.set_ylabel("GDP in Trillions of Dollars", size=10)
-    ax.set_title('GDP between 2000 and 2015',size=12)
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    st.pyplot(fig)
+    functions.GDP_line_plot()
 
     # GDP Facet line plots
     st.markdown('''Next, faceted line plots can be utilised to compare year on year growth/shrinkage for each country \
                 with appropriate scaling:''')
-    plt.figure(figsize=(16,8))
-    fig = sns.FacetGrid(df, col="country", col_wrap=3,
-                        hue = "country", sharey = False)
-    fig = (fig.map(sns.lineplot,"year","GDP",marker="o")
-            .add_legend()
-            .set_axis_labels("Year","GDP"))
-    ax.xaxis.set_label_coords(.5, -.1)
-    st.pyplot(fig)
-
+    functions.GDP_facet_plot()
 
     # Life Expectancy at Birth
     st.markdown('#### Life Expectancy at Birth')
@@ -193,27 +120,12 @@ with tab4:
                 The line plot below shows `Life Expectancy at Birth` broken down by country over the 15 year period.\n
                 Of the six countries, Zimbabwe has seen the biggest increase of 14 years.
                 ''')
-    fig = plt.figure(figsize=(8,6))
-    ax = sns.lineplot(x=df.year,y=df.life_expectancy,hue=df.country,marker="o")
-    ax.set_xlabel("Year",size=12)
-    ax.set_xbound(lower=None, upper=2016)
-    ax.set_ylabel("Life Expectancy at Birth", size=10)
-    ax.set_title('Life Expectancy at Birth has increased for all countries over this 15 year period',size=12)
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    st.pyplot(fig)
+    functions.life_expectancy_line_plot()
 
     # Facet line plots
     st.markdown('''Next, faceted line plots can be utilised to compare year on year for each country \
                 with appropriate scaling:''')
-    plt.figure(figsize=(16,8))
-    fig = sns.FacetGrid(df, col="country", col_wrap=3,
-                        hue = "country", sharey = False)
-    fig = (fig.map(sns.lineplot,"year","life_expectancy",marker="o")
-            .add_legend()
-            .set_axis_labels("Year","Life expectancy at birth (years)"))
-    st.pyplot(fig)
+    functions.life_expectancy_facet_plot()
     st.markdown('''
                 Looking at the facet plots, above, it is apparent that Chile and Mexico seemed to have dips in their life expectancy around the \
                 same time which could be looked into further. This type of plotting proves useful since much \
@@ -224,27 +136,14 @@ with tab4:
 # Scatter Plots
 with tab5:
     st.subheader('Scatter Plots')
-    fig = plt.figure(figsize=(9,6))
-    ax = sns.scatterplot(x=df.life_expectancy,y=df.GDP,hue=df.country)
-    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    plt.title('Life Expectancy at Birth vs GDP',size=15)
-    plt.xlabel('Life Expectancy at Birth',size=13)
-    plt.ylabel('GDP in Trillions of Dollars',size=13)
-    st.pyplot(fig)
+    functions.scatter_plot()
     st.markdown('''
                 The next two charts will explore the relationship between `GDP` and `Life Expectancy at Birth`. In the chart, above, \
                 it looks like the previous charts where GDP for Zimbabwe is staying flat, while their life expectancy \
                 is going up. For the other countries they seem to exhibit a rise in life expectancy as GDP goes up. \
                 The US and China seem to have very similar slopes in their relationship between GDP and life expectancy.
                 ''')
-    scatter = sns.FacetGrid(df,col="country",col_wrap=3,
-                      hue = "country", sharey = False, sharex = False)
-    scatter = (scatter.map(sns.scatterplot,"life_expectancy", "GDP")
-         .add_legend()
-         .set_axis_labels("Life expectancy at birth (years)", "GDP in Trillions of U.S. Dollars"))
-    st.pyplot(scatter)
+    functions.facet_scatter()
     st.markdown('''
                 Like the previous plots, countries are broken out into each scatter plot by facets. Looking at the \
                 individual countries, most have linear relationships between GDP and life expectancy. China, on the \

@@ -19,14 +19,6 @@ def info():
     df = pd.read_csv('all_data.csv')
     return df.info()
 
-def dfMeans():
-    '''
-    Groups the data by country and then finds averages for `GDP` and `Life Expectancy`
-    '''
-    df = load_data()
-    dfMeans = df.drop("year", axis = 1).groupby("country").mean().reset_index()
-    return dfMeans
-
 # Distplots
 def GDP_dist_plot():
     '''
@@ -40,7 +32,7 @@ def GDP_dist_plot():
     plt.show()
     st.pyplot(ax1)
 
-def life_expectancy_displot():
+def life_expectancy_distplot():
     '''
     Creates a dist plot for Life Expectancy at Birth
     '''
@@ -58,13 +50,14 @@ def GDP_bar():
     '''
     Creates a GDP bar chart
     '''
-    dfMeans()
+    df = load_data()
+    dfMeans = df.drop("year", axis = 1).groupby("country").mean().reset_index()
     fig, ax = plt.subplots()
     plt.figure(figsize=(8,6))
     ax = sns.barplot(x ='GDP',y = 'country',data=dfMeans,order=dfMeans.sort_values('GDP').country,ax=ax)
     for i in ax.containers:
         ax.bar_label(i,)
-    ax.set_xlabel('GDP in trillions of dollars')
+    ax.set_xlabel('Average GDP in trillions of dollars')
     ax.set_ylabel('Country')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -78,8 +71,8 @@ def life_expectancy_bar():
     '''
     Creates a life expectancy bar chart
     '''
-    dfMeans()
-    # order = dfMeans.sort_values('life_expectancy')
+    df = load_data()
+    dfMeans = df.drop("year", axis = 1).groupby("country").mean().reset_index()
     fig2, ax2 = plt.subplots()
     plt.figure(figsize=(8,6))
     ax2 = sns.barplot(x ='life_expectancy',
@@ -88,7 +81,7 @@ def life_expectancy_bar():
                       order=dfMeans.sort_values('life_expectancy').country,ax=ax2)
     for i in ax2.containers:
         ax2.bar_label(i,)
-    ax2.set_xlabel('Life Expectancy at Birth (Years)')
+    ax2.set_xlabel('Average Life Expectancy at Birth (Years)')
     ax2.set_ylabel('Country')
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
