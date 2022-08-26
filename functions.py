@@ -79,6 +79,7 @@ def life_expectancy_bar():
     Creates a life expectancy bar chart
     '''
     dfMeans()
+    # order = dfMeans.sort_values('life_expectancy')
     fig2, ax2 = plt.subplots()
     plt.figure(figsize=(8,6))
     ax2 = sns.barplot(x ='life_expectancy',
@@ -190,3 +191,32 @@ def life_expectancy_facet_plot():
             .add_legend()
             .set_axis_labels("Year","life_expectancy"))
     st.pyplot(fig)
+
+# Scatter Plots
+
+def scatter_plot():
+    '''
+    Creates a scatter plot for life expectancy and GDP.
+    '''
+    df = load_data()
+    fig = plt.figure(figsize=(9,6))
+    ax = sns.scatterplot(x=df.life_expectancy,y=df.GDP,hue=df.country)
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.title('Life Expectancy at Birth vs GDP',size=15)
+    plt.xlabel('Life Expectancy at Birth',size=13)
+    plt.ylabel('GDP in Trillions of Dollars',size=13)
+    st.pyplot(fig)
+
+def facet_scatter():
+    '''
+    Creates a facet scatter plot for GDP and life expectancy.
+    '''
+    df = load_data()
+    scatter = sns.FacetGrid(df,col="country",col_wrap=3,
+                      hue = "country", sharey = False, sharex = False)
+    scatter = (scatter.map(sns.scatterplot,"life_expectancy", "GDP")
+         .add_legend()
+         .set_axis_labels("Life expectancy at birth (years)", "GDP in Trillions of U.S. Dollars"))
+    st.pyplot(scatter)
