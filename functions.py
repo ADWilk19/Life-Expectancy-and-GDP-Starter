@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-
+@st.cache
 # Loading Data & Descriptive Stats
 def load_data():
     '''
@@ -25,7 +25,7 @@ def GDP_dist_plot():
     Creates a dist plot for GDP
     '''
     df = load_data()
-    plt.figure(figsize=(3,3))
+    plt.figure(figsize=(3,2))
     ax1 = sns.displot(df.GDP, rug = True, kde=False)
     plt.xlabel("GDP in Trillions of U.S. Dollars")
     plt.title("GDP is right skewed between 2000 and 2015",loc='left')
@@ -37,7 +37,7 @@ def life_expectancy_distplot():
     Creates a dist plot for Life Expectancy at Birth
     '''
     df = load_data()
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(3,2))
     ax2 = sns.displot(df.life_expectancy, rug = True, kde=False)
     plt.xlabel("Life Expectacny at Birth (Years)")
     plt.title("Life Expectancy at Birth is left skewed between 2000 and 2015")
@@ -53,7 +53,7 @@ def GDP_bar():
     df = load_data()
     dfMeans = df.drop("year", axis = 1).groupby("country").mean().reset_index()
     fig, ax = plt.subplots()
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(3,2))
     ax = sns.barplot(x ='GDP',y = 'country',data=dfMeans,order=dfMeans.sort_values('GDP').country,ax=ax)
     for i in ax.containers:
         ax.bar_label(i,)
@@ -74,7 +74,7 @@ def life_expectancy_bar():
     df = load_data()
     dfMeans = df.drop("year", axis = 1).groupby("country").mean().reset_index()
     fig2, ax2 = plt.subplots()
-    plt.figure(figsize=(8,6))
+    plt.figure(figsize=(3,2))
     ax2 = sns.barplot(x ='life_expectancy',
                       y = 'country',
                       data=dfMeans,

@@ -72,7 +72,7 @@ with tab2:
     functions.life_expectancy_bar()
     st.markdown('As can be seen, the average `Life Expectancy at Birth` for most countries is\
         somewhere between 74 and 80 years.  The exception is Zimbabwe which, at just over 50 years,\
-        might explain the left skew of the displot.')
+        might explain the left skew of the dist plot.')
 
 # Violin and Swarm Plots
 with tab3:
