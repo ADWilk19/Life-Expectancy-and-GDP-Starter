@@ -1,5 +1,4 @@
 # packaging
-python==3.8.12
 pip>=9
 setuptools>=26
 twine
